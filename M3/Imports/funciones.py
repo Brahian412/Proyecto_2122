@@ -88,7 +88,6 @@ def get_adventures_with_chars():
         dic_adv[i] = dic_properties
     return dic_adv
 
-
 # Mira que exista el usuario y la contraseña, si no existe el usuario devuelve 0, si la contra esta mal devuelve -1, y
 # si esta bien devuelve 1.
 def checkUserbdd(user, password):
