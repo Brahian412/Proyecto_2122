@@ -65,8 +65,8 @@ while True:
                 print("Incorrect Password")
                 input("Press enter to continue")
                 print()
-        flg_0 = True
-        flg_1 = False
+            flg_0 = True
+            flg_1 = False
 
     while flg_11:
         pos_menu = 0
@@ -133,12 +133,9 @@ while True:
             flg_0 = False
             Exit = True
 
-    #Flag para iniciar un juego
+    # Flag para iniciar un juego
     while flg_juego:
         print("\n\n")
-
-        funciones.getHeader()
-
 
     # Flag para la creación de usuario
     while flg_2:
@@ -166,6 +163,7 @@ while True:
 
     # Flag para el menú de reports
     while flg_4:
+        print("\n\n")
         funciones.getReportHeader()
         opc = funciones.getOpt(head_report_menu, menu_input, [1, 2, 3, 4])
         if opc == 4:
