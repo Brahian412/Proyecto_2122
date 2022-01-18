@@ -4,6 +4,7 @@ import pymysql
 conn = pymysql.connect(host="52.157.66.187", user="aleix", password="1Q2w3e4r5t6y", db="CHOOSE_YOUR_ADVENTURE")
 cur = conn.cursor()
 
+
 def getMainHeader():
     print("*" * 100)
     print("                 ######## ##       ####  ######   ########    ######## ##     ##    "
@@ -29,8 +30,9 @@ def getMainHeader():
           "\n           ##     ##    ###    ######## ##    ##    ##     #######  ##     ## ##     ##    ")
     print("*" * 100)
 
+
 def getReportHeader():
-    print("*"*100)
+    print("*" * 100)
     print("                ########  ######## ########   #######  ########  ########  ######  "
           "\n                ##     ## ##       ##     ## ##     ## ##     ##    ##    ##    ## "
           "\n                ##     ## ##       ##     ## ##     ## ##     ##    ##    ##       "
@@ -38,7 +40,8 @@ def getReportHeader():
           "\n                ##   ##   ##       ##        ##     ## ##   ##      ##          ## "
           "\n                ##    ##  ##       ##        ##     ## ##    ##     ##    ##    ## "
           "\n                ##     ## ######## ##         #######  ##     ##    ##     ######  ")
-    print("*"*100)
+    print("*" * 100)
+
 
 def getHeader(header):
     if len(header) % 2 != 0:
@@ -147,7 +150,7 @@ def getOpt(textOpts="", inputOptText="", rangeList=[], dictionary={}, exceptions
     list_keys = list(dictionary.keys())
     # Bucle que comprueba que sea una opción válida y imprime el menú otra vez en caso de que escriba un "+" o un "-"
     while True:
-        print(textOpts+"\n")
+        print(textOpts + "\n")
         opc = input(inputOptText)
         if opc.isdigit():
             if (opc in str(rangeList)) or (opc in str(exceptions)) or (opc in str(list_keys)):
@@ -222,19 +225,26 @@ def insertUser(user, password):
     cur.execute(query)
     conn.commit()
 
-#{'NomUsuari': {'password': 'passwordDelUsuari', 'idUser': id de l’usuari}, 'Jordi': {'password':
-#'1234', 'idUser': 2}}
+
+# {'NomUsuari': {'password': 'passwordDelUsuari', 'idUser': id de l’usuari}, 'Jordi': {'password':
+# '1234', 'idUser': 2}}
 
 
 def getUserIds():
+    list_iduser = []
+    list_username = []
     query_id = f"select id_user from USER order by id_user asc"
     query_name = f"select user_name from USER order by id_user asc"
     cur.execute(query_id)
     id_rows = cur.fetchall()
     cur.execute(query_name)
     name_rows = cur.fetchall()
-    res_list = [id_rows,name_rows]
-    return res_list
+    for i in range(len(id_rows)):
+        list_iduser.append(id_rows[i][0])
+        list_username.append(name_rows[i][0])
+    list_res = [list_username, list_iduser]
+    return list_res
+
 
 # Devuelve el diccionario 'Adventures' que es del tipo {id_aventura:{Nombre,descripcion,id_personajes},...}
 def get_adventures_with_chars():
@@ -271,7 +281,8 @@ def get_adventures_with_chars():
         dic_adv[i] = dic_properties
     return dic_adv
 
-#Funcion que devuelve un diccionario con los nombres como clave y un diccionario con la contra y el id como valor
+
+# Funcion que devuelve un diccionario con los nombres como clave y un diccionario con la contra y el id como valor
 def getUsers():
     dic_users = {}
     query_idusers = f"select id_user from USER order by id_user asc"
@@ -283,11 +294,12 @@ def getUsers():
     query_passw = f"select password from USER order by id_user asc"
     cur.execute(query_passw)
     passws = cur.fetchall()
-    for i in range (len(idusers)):
-        dic_users[str(usernames[i][0])] = {'Password':passws[i][0],'idUser':idusers[i][0]}
+    for i in range(len(idusers)):
+        dic_users[str(usernames[i][0])] = {'Password': passws[i][0], 'idUser': idusers[i][0]}
     return dic_users
 
-#Funcion que devuelve True si el usuario existe y False en caso contrario
+
+# Funcion que devuelve True si el usuario existe y False en caso contrario
 def userExists(user):
     users_list = []
     query_user = f"select user_name from USER"
@@ -299,6 +311,7 @@ def userExists(user):
         return True
     else:
         return False
+
 
 # Mira que exista el usuario y la contraseña, si no existe el usuario devuelve 0, si la contra esta mal devuelve -1, y
 # si esta bien devuelve 1.
@@ -315,17 +328,19 @@ def checkUserbdd(user, password):
         return 0
 
 
-def insertCurrentGame(idUser,isChar,idAdventure):
+def insertCurrentGame(idUser, isChar, idAdventure):
     query_insert = f"insert into GAME (id_adventure,id_character,id_user,date)" \
                    f" values ('{idAdventure}','{isChar}','{idUser}','{datetime.today().strftime('%Y-%m-%d')}')"
     cur.execute(query_insert)
     conn.commit()
 
-def insertCurrentChoice(idGame,actual_id_step,id_answer):
+
+def insertCurrentChoice(idGame, actual_id_step, id_answer):
     query_insert = f"insert into ADVENTURE_SAVE (id_game,id_step,id_option) " \
                    f"values ('{idGame}','{actual_id_step}','{id_answer}')"
     cur.execute(query_insert)
     conn.commit()
+
 
 def get_table(query):
     list_colums = []
@@ -347,9 +362,10 @@ def get_characters():
     query_namechars = f"select character_name from CHOOSE_YOUR_ADVENTURE.CHARACTER order by id_character asc"
     cur.execute(query_namechars)
     namechars = cur.fetchall()
-    for i in range (len(idchars)):
-        dic_chars [idchars[i][0]] = namechars[i][0]
+    for i in range(len(idchars)):
+        dic_chars[idchars[i][0]] = namechars[i][0]
     return dic_chars
+
 
 def getIdGames():
     list_idgames = []
@@ -358,21 +374,13 @@ def getIdGames():
     idgames = cur.fetchall()
     for i in range(len(idgames)):
         list_idgames.append(idgames[i][0])
-    tuple_idgames = tuple (list_idgames)
+    tuple_idgames = tuple(list_idgames)
     return tuple_idgames
 
-# {idGame:{idUser': id dusuari, 'Username': 'nom del usuari', 'idAdventure': id de aventura, 'Name': 'nom de
-# l'aventura', # 'date': data en format datetime, 'idCharacter': id del personatje, 'CharacterName': 'Nom del
-# personatje'} ,
-# 1: {'idUser': 1, 'Username': 'Rafa', 'idAdventure': 1, 'Name': 'Este muerto esta muy vivo',
-# 'date': datetime.datetime(2021, 11, 16, 19, 5, 48), 'idCharacter': 1, 'CharacterName': 'Beowulf'},
 
-# 2: {'idUser': 1, 'Username': 'Rafa', 'idAdventure': 1, 'Name': 'Este muerto esta muy vivo',
-# 'date': datetime.datetime(2021, 11, 24, 0, 0), 'idCharacter': 1, 'CharacterName': 'Beowulf'},
 def getReplayAdventures():
     dic_replays = {}
     tuple_idgames = getIdGames()
-
     for i in range(len(tuple_idgames)):
         query_iduser = f"select id_user from GAME where id_game = ('{tuple_idgames[i]}')"
         cur.execute(query_iduser)
@@ -386,28 +394,90 @@ def getReplayAdventures():
         cur.execute(query_idadventure)
         idadventure = cur.fetchone()
 
-        query_idadventure = f"select description from ADVENTURE where id_adventure = ('{idadventure[0]}')"
-        cur.execute(query_idadventure)
-        iddescription = cur.fetchone()
+        query_advname = f"select adventure_name from ADVENTURE where id_adventure = ('{idadventure[0]}')"
+        cur.execute(query_advname)
+        advname = cur.fetchone()
 
         query_date = f"select date from GAME where id_game = ('{tuple_idgames[i]}')"
         cur.execute(query_date)
         date = cur.fetchone()
 
-        dic_replays[tuple_idgames[i]] = {'idUser':idusers[0],'Username':user_name[0],'idAdventure':idadventure[0],
-                                         'Name':iddescription[0],'Date':date[0]}
+        query_idchar = f"select id_character from GAME where id_game = ('{tuple_idgames[i]}')"
+        cur.execute(query_idchar)
+        idchar = cur.fetchone()
 
-    return  dic_replays
+        query_charname = f"select character_name from CHOOSE_YOUR_ADVENTURE.CHARACTER" \
+                         f" where id_character = ('{idchar[0]}')"
+        cur.execute(query_charname)
+        charname = cur.fetchone()
 
-print(getReplayAdventures())
-#------------------------------------------------------------------------------------------------------------
+        dic_replays[tuple_idgames[i]] = {'idUser': idusers[0], 'Username': user_name[0], 'idAdventure': idadventure[0],
+                                         'Name': advname[0], 'Date': date[0],
+                                         'id_character': idchar[0], 'character_name': charname[0]}
+
+    return dic_replays
+
+def get_id_bystep_adventure():
+    dic_id_bystep_adventure = {}
+
+    #Llamo a la funcion getIdGames para cojer el último id
+    id_game = getIdGames()
+    id_game = id_game[len(id_game) - 1]
+    get_adventures_with_chars()
+
+    #Query para conseguir el id de aventura a partir del id del ultimo juego
+    query_idadventure = f"select id_adventure from GAME where id_game = ('{id_game}')"
+    cur.execute(query_idadventure)
+    idadventure = cur.fetchone()
+    idadventure = idadventure[0]
+
+    #Query para sacar la tupla de tuplas que contienen los pasos de esa aventura
+    query_idstep = f"select id_step from STEP where id_adventure = ('{idadventure}') order by id_step asc"
+    cur.execute(query_idstep)
+    id_steps = cur.fetchall()
+    list_steps = []
+    for i in range (len(id_steps)):
+        list_steps.append(id_steps[i][0])
+
+    #Query para sacar la tupla de tuplas que contienen la descripción de cada paso
+    query_description = f"select description from STEP where id_adventure = ('{idadventure}') order by id_step asc"
+    cur.execute(query_description)
+    description = cur.fetchall()
+
+    #Query para sacar todos los las last_step
+    query_laststep = f"select last_step from CHOOSE_YOUR_ADVENTURE.OPTION order by id_option asc"
+    cur.execute(query_laststep)
+    laststep = cur.fetchall()
+    list_laststep = []
+    for i in range (len(laststep)):
+        list_laststep.append(laststep[i][0])
+
+    #Crea una tupla de tuplas con los pasos que puede escojer cada step
+    list_steps_options = [list_steps, list_laststep]
+    list_finalsteps = []
+    for step in range(len(list_laststep)):
+        list_tuple_steps = []
+        for last in range(len(list_laststep)):
+            if list_steps_options[0][step] == list_steps_options[1][last]:
+                list_tuple_steps.append(list_steps_options[0][last])
+
+        list_finalsteps.append(tuple(list_tuple_steps))
+    tuple_finalsteps = tuple(list_finalsteps)
+
+    #For para ver si tiene paso final cada step
+    for i in range (len(id_steps)):
+        query_finalstep = f"select end_step from STEP where id_step = ('{list_steps[i]}')"
+        cur.execute(query_finalstep)
+        final_step = cur.fetchone()
+        dic_id_bystep_adventure[list_steps[i]] = {'Description':description[i][0],'answer_in_step':tuple_finalsteps[i],
+                                                   'Final_Step':final_step[0]}
+    return dic_id_bystep_adventure
+
+# ------------------------------------------------------------------------------------------------------------
 
 # FUNCIONES QUE FALTAN POR IMPLEMENTAR(TIENEN PARTE DE SQL)
-#-Funciones que no comprendo:
-# def get_id_bystep_adventure():
 # def get_first_step_adventure():
 # def getFormatedTable(queryTable,title=""):
 # def getChoices():
 # def replay(choices):
 # def get_answers_bystep_adventure():
-
