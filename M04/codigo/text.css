@@ -1,1 +1,140 @@
+body{
+	margin: 0px;
+	padding: 0px;
+	background-color: #051524;	
+}
+.Paginas a {
+	padding-left: 15px;
+	color: #74c2f4;
+    text-decoration: none;
+}
+.titulo{
+	margin: auto;
+	
+}
+.Paginas a:hover{
+    text-decoration: underline;
+    color: white;
+}
+header {
+	background: linear-gradient(to bottom,#74c2f4,#051524);
+	padding: 15px;
+}
+.header{
+	display: flex;
+	align-items: baseline;
+}
 
+.Paginas{
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+
+}
+.busqueda{
+	display: flex;
+	justify-content: flex-start;
+	margin-right: auto;
+	max-height: 25px;
+}
+
+.icon{
+	display: flex;
+	justify-content: baseline;
+}
+.icon h1{
+	display: flex;
+	justify-content: space-between;
+	color: #051524;
+
+}
+.imagenHeader{
+	display: flex;
+	justify-content: space-between;  
+	width: 125px;
+	margin-left:20px ;
+}  
+.footer img{
+	height: 25px;
+	margin-left: 3px;
+}
+.footer{
+	display: flex;
+	justify-content: space-between;
+	padding: 10px;
+}
+.copy{
+	color: #74c2f4;
+}
+.socials img{
+	filter: invert(90%) sepia(22%) saturate(6909%) hue-rotate(174deg) brightness(98%) contrast(95%);
+}
+main{
+	padding: 15px;
+}
+main h2{
+	color: #74c2f4 ;
+}
+main p{
+	text-indent: 15px;
+}
+.div1{
+	color: white;
+	margin: 10px;
+	padding: 8px;
+	border: #74c2f4 solid 2px;
+	border-radius: 10px;
+}
+.div2{
+	margin: 10px;
+	background-color: #74c2f4;
+	padding: 8px;
+	border: #74c2f4 solid 2px;
+	border-radius: 10px;
+	margin-top: 40px;
+	color: #1b384e;
+}
+.div2 h2 {
+	color: #051524;
+} 
+.div3{
+	margin: 10px;
+	padding: 8px;
+	border: #74c2f4 solid 2px;
+	border-radius: 10px;
+	margin-top: 40px;
+	color: white;
+}
+.lista{
+	margin-top: 20px;
+	margin-bottom: 50px;
+	margin-left: 10px;	
+	max-width: 300px;
+	padding: auto;
+	border: #74c2f4 solid 2px;
+	border-radius: 10px;
+	color:white;
+}
+.lista h2{
+	display: flex;
+	justify-content: center;
+	color: #74c2f4;
+}
+.lista ol{
+	display: flex;
+	justify-content: flex-end;
+	align-items: flex-start;
+	flex-direction: column;
+}
+.lista a{
+	color: white;
+	text-decoration: none;
+}
+
+.imagen1{
+	display: flex;
+	margin: auto;
+	width: 150px;
+	height: 150px;
+	
+}
