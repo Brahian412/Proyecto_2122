@@ -4,7 +4,6 @@ import pymysql
 conn = pymysql.connect(host="52.157.66.187", user="aleix", password="1Q2w3e4r5t6y", db="CHOOSE_YOUR_ADVENTURE")
 cur = conn.cursor()
 
-
 def getMainHeader():
     print("*" * 100)
     print("                 ######## ##       ####  ######   ########    ######## ##     ##    "
@@ -272,6 +271,22 @@ def get_adventures_with_chars():
         dic_adv[i] = dic_properties
     return dic_adv
 
+#Funcion que devuelve un diccionario con los nombres como clave y un diccionario con la contra y el id como valor
+def getUsers():
+    dic_users = {}
+    query_idusers = f"select id_user from USER order by id_user asc"
+    cur.execute(query_idusers)
+    idusers = cur.fetchall()
+    query_username = f"select user_name from USER order by id_user asc"
+    cur.execute(query_username)
+    usernames = cur.fetchall()
+    query_passw = f"select password from USER order by id_user asc"
+    cur.execute(query_passw)
+    passws = cur.fetchall()
+    for i in range (len(idusers)):
+        dic_users[str(usernames[i][0])] = {'Password':passws[i][0],'idUser':idusers[i][0]}
+    return dic_users
+
 #Funcion que devuelve True si el usuario existe y False en caso contrario
 def userExists(user):
     users_list = []
@@ -300,9 +315,9 @@ def checkUserbdd(user, password):
         return 0
 
 
-def insertCurrentGame(idGame,idUser,isChar,idAdventure):
-    query_insert = f"insert into GAME (id_game,id_adventure,id_character,id_user,date)" \
-                   f" values ('{idGame}','{idAdventure}','{isChar}','{idUser}','{datetime.today().strftime('%Y-%m-%d')}')"
+def insertCurrentGame(idUser,isChar,idAdventure):
+    query_insert = f"insert into GAME (id_adventure,id_character,id_user,date)" \
+                   f" values ('{idAdventure}','{isChar}','{idUser}','{datetime.today().strftime('%Y-%m-%d')}')"
     cur.execute(query_insert)
     conn.commit()
 
@@ -323,39 +338,76 @@ def get_table(query):
     tuple_colums += rows
     return tuple_colums
 
-# -----------------------------------------------------------------------ARREGLAR, NO FORMATA BIEN
-def getFormatedTable(queryTable,title=""):
-    list_sizecols = []
-    #Crea una tupla amb la mesura que ha de tenir cada columna
-    num_columns = len(queryTable[0])
-    for i in range (num_columns):
-        list_sizecols.append((100//num_columns-len(str(queryTable[0][i]))))
-    tuple_sizecols = tuple (list_sizecols)
-    print("*"*100)
-    print(tuple_sizecols)
-    print(getHeadeForTableFromTuples(queryTable[0],tuple_sizecols,title))
-    return tuple_sizecols
 
-    # for i in id_adventures_list:
-    #     stringRes += getFormatedBodyColumns((str(i), adventures[i]["Name"], adventures[i]["Description"]), (13, 35, 45),
-    #                                         2) + "\n"
+def get_characters():
+    dic_chars = {}
+    query_idchars = f"select id_character from CHOOSE_YOUR_ADVENTURE.CHARACTER order by id_character asc"
+    cur.execute(query_idchars)
+    idchars = cur.fetchall()
+    query_namechars = f"select character_name from CHOOSE_YOUR_ADVENTURE.CHARACTER order by id_character asc"
+    cur.execute(query_namechars)
+    namechars = cur.fetchall()
+    for i in range (len(idchars)):
+        dic_chars [idchars[i][0]] = namechars[i][0]
+    return dic_chars
 
+def getIdGames():
+    list_idgames = []
+    query_idgames = f"select id_game from GAME order by id_game asc"
+    cur.execute(query_idgames)
+    idgames = cur.fetchall()
+    for i in range(len(idgames)):
+        list_idgames.append(idgames[i][0])
+    tuple_idgames = tuple (list_idgames)
+    return tuple_idgames
 
-getFormatedTable(get_table(f"select * from USER"), "USUARIOS")
+# {idGame:{idUser': id dusuari, 'Username': 'nom del usuari', 'idAdventure': id de aventura, 'Name': 'nom de
+# l'aventura', # 'date': data en format datetime, 'idCharacter': id del personatje, 'CharacterName': 'Nom del
+# personatje'} ,
+# 1: {'idUser': 1, 'Username': 'Rafa', 'idAdventure': 1, 'Name': 'Este muerto esta muy vivo',
+# 'date': datetime.datetime(2021, 11, 16, 19, 5, 48), 'idCharacter': 1, 'CharacterName': 'Beowulf'},
 
+# 2: {'idUser': 1, 'Username': 'Rafa', 'idAdventure': 1, 'Name': 'Este muerto esta muy vivo',
+# 'date': datetime.datetime(2021, 11, 24, 0, 0), 'idCharacter': 1, 'CharacterName': 'Beowulf'},
+def getReplayAdventures():
+    dic_replays = {}
+    tuple_idgames = getIdGames()
 
+    for i in range(len(tuple_idgames)):
+        query_iduser = f"select id_user from GAME where id_game = ('{tuple_idgames[i]}')"
+        cur.execute(query_iduser)
+        idusers = cur.fetchone()
+
+        query_username = f"select user_name from USER where id_user = ('{idusers[0]}')"
+        cur.execute(query_username)
+        user_name = cur.fetchone()
+
+        query_idadventure = f"select id_adventure from GAME where id_game = ('{tuple_idgames[i]}')"
+        cur.execute(query_idadventure)
+        idadventure = cur.fetchone()
+
+        query_idadventure = f"select description from ADVENTURE where id_adventure = ('{idadventure[0]}')"
+        cur.execute(query_idadventure)
+        iddescription = cur.fetchone()
+
+        query_date = f"select date from GAME where id_game = ('{tuple_idgames[i]}')"
+        cur.execute(query_date)
+        date = cur.fetchone()
+
+        dic_replays[tuple_idgames[i]] = {'idUser':idusers[0],'Username':user_name[0],'idAdventure':idadventure[0],
+                                         'Name':iddescription[0],'Date':date[0]}
+
+    return  dic_replays
+
+print(getReplayAdventures())
+#------------------------------------------------------------------------------------------------------------
 
 # FUNCIONES QUE FALTAN POR IMPLEMENTAR(TIENEN PARTE DE SQL)
 #-Funciones que no comprendo:
-    # def setIdGame():#En teoría actualiza la tabla Game con un nuevo game
-
 # def get_id_bystep_adventure():
 # def get_first_step_adventure():
-# def get_characters():
-# def getReplayAdventures():
+# def getFormatedTable(queryTable,title=""):
 # def getChoices():
-# def getIdGames():
 # def replay(choices):
-# def getUsers():
 # def get_answers_bystep_adventure():
 
