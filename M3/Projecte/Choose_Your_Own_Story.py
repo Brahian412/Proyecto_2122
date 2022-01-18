@@ -135,18 +135,19 @@ while True:
 
     # Flag para iniciar un juego
     while flg_juego:
+        game_context = {}
         stringChars = ""
         adventures = funciones.get_adventures_with_chars()
         adventures_keys = list(adventures.keys())
         funciones.getHeader(adventures[adv]["Name"])
-        print(funciones.getFormatedBodyColumns(("Adventure: ",adventures[adv]["Name"]),(30,50)))
+        print(funciones.getFormatedBodyColumns(("Adventure: ", adventures[adv]["Name"]), (30, 50)))
         print(funciones.getFormatedBodyColumns(("Description: ", adventures[adv]["Description"]), (30, 50)))
-
-        print("\n"+ "*"*45+"Characters"+"*" * 45)
+        print("\n" + "*" * 45 + "Characters" + "*" * 45)
         characters = funciones.get_characters()
         for i in range(len(adventures[adv]["Characters"])):
-            stringChars += (characters[adventures[adv]["Characters"][i]] + "\n")
-        char = funciones.getOpt("\n"+stringChars,"Select your Character (0 Go back)",adventures[adv]["Characters"],
+            stringChars += ("{})".format(adventures[adv]["Characters"][i]) + characters[
+                adventures[adv]["Characters"][i]] + "\n")
+        char = funciones.getOpt("\n" + stringChars, "Select your Character (0 Go back)", adventures[adv]["Characters"],
                                 exceptions=[0])
 
         if char == 0:
@@ -154,7 +155,24 @@ while True:
             flg_10 = True
             break
         else:
-            print("You have selected to play with {}".format(adventures[adv]["Characters"]))
+            a = funciones.getIdGames()
+            id_game = a[len(a) - 1]
+
+            list_ids = funciones.getUserIds()
+            index_user = list_ids[0].index(username)
+
+            game_context["id_game"] = id_game
+            game_context["id_adventure"] = adv
+            game_context["name_adventure"] = adventures[adv]["Name"]
+            game_context["id_character"] = char
+            game_context["character_name"] = characters[char]
+            game_context["id_user"] = list_ids[1][index_user]
+            game_context["user"] = username
+
+            print("You have selected to play with {}".format(characters[char]))
+            input("Press Enter to continue")
+            print("\n\n\n")
+            funciones.getHeader(adventures[adv]["Name"])
 
 
     # Flag para la creación de usuario
