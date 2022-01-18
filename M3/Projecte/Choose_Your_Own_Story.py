@@ -7,7 +7,7 @@ flg_2 = False
 flg_3 = False
 flg_4 = False
 flg_10 = False
-flg_11 = False
+flg_chooseAdventure = False
 flg_juego = False
 # Strigs de los menús
 head_menu = "\n" + " " * 45 + "1)Login\n" + " " * 45 + "2)Create User\n" + " " * 45 + "3)Replay Adventure\n" + \
@@ -53,7 +53,7 @@ while True:
         password = input()
         if funciones.checkUserbdd(username, password) == 1:
             print("Hi {}, lets play!".format(username))
-            flg_11 = True
+            flg_chooseAdventure = True
             flg_1 = False
         else:
             if funciones.checkUserbdd(username, password) == 0:
@@ -68,7 +68,7 @@ while True:
             flg_0 = True
             flg_1 = False
 
-    while flg_11:
+    while flg_chooseAdventure:
         pos_menu = 0
         adventures = funciones.get_adventures_with_chars()
         adventures_keys = list(adventures.keys())
@@ -77,9 +77,9 @@ while True:
             for i in adventures_keys[pos_menu:pos_menu + 4]:
                 dic_show[i] = adventures[i]
             stringAdventures = funciones.getFormatedAdventures(dic_show)
-            opc = funciones.getOpt(stringAdventures, "What adventure do you want to play?(0 Go back)",
+            adv = funciones.getOpt(stringAdventures, "What adventure do you want to play?(0 Go back)",
                                    adventures_keys, exceptions=[0, "+", "-"])
-            if opc == "+":
+            if adv == "+":
                 if pos_menu + 4 > len(adventures_keys) - 4:
                     if pos_menu + 4 == len(adventures_keys):
                         pos_menu = 0
@@ -90,7 +90,7 @@ while True:
                 else:
                     pos_menu += 4
                     print()
-            elif opc == "-":
+            elif adv == "-":
                 if pos_menu - 4 < 0:
                     if pos_menu == 0:
                         pos_menu = len(adventures_keys) - 4
@@ -103,13 +103,13 @@ while True:
                     print()
             else:
                 # Elije Opcion del menú
-                if opc == 0:
+                if adv == 0:
                     flg_10 = True
-                    flg_11 = False
+                    flg_chooseAdventure = False
                     break
                 else:
                     flg_juego = True
-                    flg_11 = False
+                    flg_chooseAdventure = False
                     break
     while flg_10:
         funciones.getMainHeader()
@@ -119,7 +119,7 @@ while True:
             flg_0 = True
             flg_10 = False
         elif opc == 2:
-            flg_11 = True
+            flg_chooseAdventure = True
             flg_10 = False
         elif opc == 3:
             flg_3 = True
@@ -135,7 +135,27 @@ while True:
 
     # Flag para iniciar un juego
     while flg_juego:
-        print("\n\n")
+        stringChars = ""
+        adventures = funciones.get_adventures_with_chars()
+        adventures_keys = list(adventures.keys())
+        funciones.getHeader(adventures[adv]["Name"])
+        print(funciones.getFormatedBodyColumns(("Adventure: ",adventures[adv]["Name"]),(30,50)))
+        print(funciones.getFormatedBodyColumns(("Description: ", adventures[adv]["Description"]), (30, 50)))
+
+        print("\n"+ "*"*45+"Characters"+"*" * 45)
+        characters = funciones.get_characters()
+        for i in range(len(adventures[adv]["Characters"])):
+            stringChars += (characters[adventures[adv]["Characters"][i]] + "\n")
+        char = funciones.getOpt("\n"+stringChars,"Select your Character (0 Go back)",adventures[adv]["Characters"],
+                                exceptions=[0])
+
+        if char == 0:
+            flg_juego = False
+            flg_10 = True
+            break
+        else:
+            print("You have selected to play with {}".format(adventures[adv]["Characters"]))
+
 
     # Flag para la creación de usuario
     while flg_2:
