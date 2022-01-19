@@ -281,7 +281,6 @@ def get_adventures_with_chars():
         dic_adv[i] = dic_properties
     return dic_adv
 
-
 # Funcion que devuelve un diccionario con los nombres como clave y un diccionario con la contra y el id como valor
 def getUsers():
     dic_users = {}
@@ -377,7 +376,6 @@ def getIdGames():
     tuple_idgames = tuple(list_idgames)
     return tuple_idgames
 
-
 def getReplayAdventures():
     dic_replays = {}
     tuple_idgames = getIdGames()
@@ -418,7 +416,7 @@ def getReplayAdventures():
     return dic_replays
 
 def get_id_bystep_adventure():
-    dic_id_bystep_adventure = {}
+    id_by_steps = {}
 
     #Llamo a la funcion getIdGames para cojer el último id
     id_game = getIdGames()
@@ -452,32 +450,132 @@ def get_id_bystep_adventure():
     for i in range (len(laststep)):
         list_laststep.append(laststep[i][0])
 
-    #Crea una tupla de tuplas con los pasos que puede escojer cada step
-    list_steps_options = [list_steps, list_laststep]
-    list_finalsteps = []
-    for step in range(len(list_laststep)):
-        list_tuple_steps = []
-        for last in range(len(list_laststep)):
-            if list_steps_options[0][step] == list_steps_options[1][last]:
-                list_tuple_steps.append(list_steps_options[0][last])
-
-        list_finalsteps.append(tuple(list_tuple_steps))
-    tuple_finalsteps = tuple(list_finalsteps)
-
     #For para ver si tiene paso final cada step
-    for i in range (len(id_steps)):
+    for i in range (len(list_steps)):
         query_finalstep = f"select end_step from STEP where id_step = ('{list_steps[i]}')"
         cur.execute(query_finalstep)
         final_step = cur.fetchone()
-        dic_id_bystep_adventure[list_steps[i]] = {'Description':description[i][0],'answer_in_step':tuple_finalsteps[i],
-                                                   'Final_Step':final_step[0]}
-    return dic_id_bystep_adventure
+        final_step = final_step[0]
 
+        # Crea una tupla con las opciones que puede escojer cada step
+        query_idoption = f"select id_option from CHOOSE_YOUR_ADVENTURE.OPTION where last_step = ('{i}')"
+        cur.execute(query_idoption)
+        idoption = cur.fetchall()
+        print("IDOPTION=",idoption)
+
+        query_finalsteps = f"select next_step from CHOOSE_YOUR_ADVENTURE.OPTION where last_step = ('{idoption}')"
+        cur.execute(query_finalsteps)
+        laststeps = cur.fetchall()
+        list_laststeps = []
+        for x in range(len(laststeps)):
+            list_laststeps.append(laststeps[x][0])
+        tuple_finalsteps = tuple(list_laststeps)
+
+
+
+        id_by_steps[list_steps[i]] = {'Description':description[i][0],'answer_in_step':tuple_finalsteps,
+                                                   'Final_Step':final_step[0]}
+    return id_by_steps
+print(get_id_bystep_adventure())
 # ------------------------------------------------------------------------------------------------------------
 
+def get_first_step_adventure():
+    id_by_steps = get_id_bystep_adventure()
+    # Llamo a la funcion getIdGames para cojer el último id
+    id_game = getIdGames()
+    id_game = id_game[len(id_game) - 1]
+
+    get_adventures_with_chars()
+
+    # Query para conseguir el id de aventura a partir del id del ultimo juego
+    query_idadventure = f"select id_adventure from GAME where id_game = ('{id_game}')"
+    cur.execute(query_idadventure)
+    idadventure = cur.fetchone()
+    idadventure = idadventure[0]
+
+    # Query para sacar la tupla de tuplas que contienen los pasos de esa aventura
+    query_idstep = f"select id_step from STEP where id_adventure = ('{idadventure}') order by id_step asc"
+    cur.execute(query_idstep)
+    id_steps = cur.fetchall()
+
+    return id_by_steps[id_steps[0][0]]
+
+
+# {(idAnswers_ByStep_Adventure, idByStep_Adventure): {'Description': 'descripció daquest pas',
+# 'Resolution_Answer': 'Texte al camp resolution answer de la taula a la BBDD', 'NextStep_Adventure': id del
+# seguent pas}, (2, 1): {'Description': 'Escoge el camino del centro, del que parecen provenir ruidos de ramas al
+# romperse y astillarse ...', 'Resolution_Anwer': 'Piensas que para ser digno de la espada de las valkirias, debes
+# de afrontar tus miedos y peligros que acechan', 'NextStep_Adventure': 3}....}
+#--------------
+# Crea una tupla con las opciones que puede escojer cada step
+#         query_idoption = f"select id_option from CHOOSE_YOUR_ADVENTURE.OPTION where last_step = ('{list_steps[i]}')"
+#         cur.execute(query_idoption)
+#         idoption = cur.fetchall()
+#         list_idoption = []
+#         for x in range (len(idoption)):
+#             list_idoption.append(idoption[x][0])
+#         tuple_idoption = tuple(list_idoption)
+#
+#         list_laststeps = []
+#         for x in range(len(tuple_idoption)):
+#             query_finalsteps = f"select next_step from CHOOSE_YOUR_ADVENTURE.OPTION" \
+#                                f" where id_option = ('{tuple_idoption[x]}')"
+#             cur.execute(query_finalsteps)
+#             laststeps = cur.fetchone()
+#             list_laststeps.append(laststeps[0])
+#         tuple_finalsteps = tuple (list_laststeps)
+def get_answers_bystep_adventure():
+
+    idAnswers_ByStep_Adventure = {}
+    id_by_steps = get_id_bystep_adventure()
+
+    # Llamo a la funcion getIdGames para cojer el último id
+    id_game = getIdGames()
+    id_game = id_game[len(id_game) - 1]
+
+    get_adventures_with_chars()
+
+    # Query para sacar el ultimo paso realizado
+    query_idstep = f"select id_step from ADVENTURE_SAVE where id_game = ('{id_game}') order by id_step desc"
+    cur.execute(query_idstep)
+    id_steps = cur.fetchall()
+    if len(id_steps) == 0:
+        id_steps = 1
+    else:
+        id_steps = id_steps[0][0]
+
+    id_answers = id_by_steps[id_steps]["answer_in_step"]
+
+    for i in range(len(id_answers)):
+        #description = id_by_steps[i]["Description"]
+        query_desc = f"select description from CHOOSE_YOUR_ADVENTURE.OPTION where last_step = ('{id_steps}')"
+        cur.execute(query_desc)
+        description = cur.fetchall()
+        description = description[i][0]
+
+        if id_by_steps[id_answers[i]]["Final_Step"] == 1:
+            answer = ""
+        else:
+            #Query per sacar answer del pas seleccionat
+            query_answer = f"select answer from CHOOSE_YOUR_ADVENTURE.OPTION where id_option = ('{id_answers[i]}')"
+            cur.execute(query_answer)
+            answer = cur.fetchone()[0]
+
+        #Query per sacar el id del següent pas
+        query_next= f"select next_step from CHOOSE_YOUR_ADVENTURE.OPTION where id_option = ('{id_answers[i]}')"
+        cur.execute(query_next)
+        id_next = cur.fetchone()[0]
+
+        idAnswers_ByStep_Adventure[(id_answers[i],id_steps)] = {"Description":description,"Resolution_Answer":answer,"NextStep_Adventure":id_next}
+
+    return idAnswers_ByStep_Adventure
+
+def getChoices():
+    a = get_id_bystep_adventure()
+    b = get_answers_bystep_adventure()
+    tuple_Res = (a,b)
+    return tuple_Res
+
 # FUNCIONES QUE FALTAN POR IMPLEMENTAR(TIENEN PARTE DE SQL)
-# def get_first_step_adventure():
 # def getFormatedTable(queryTable,title=""):
-# def getChoices():
 # def replay(choices):
-# def get_answers_bystep_adventure():
