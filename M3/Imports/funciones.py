@@ -458,25 +458,17 @@ def get_id_bystep_adventure():
         final_step = final_step[0]
 
         # Crea una tupla con las opciones que puede escojer cada step
-        query_idoption = f"select id_option from CHOOSE_YOUR_ADVENTURE.OPTION where last_step = ('{i}')"
+        query_idoption = f"select id_option from CHOOSE_YOUR_ADVENTURE.OPTION where last_step = ('{list_steps[i]}')"
         cur.execute(query_idoption)
         idoption = cur.fetchall()
-        print("IDOPTION=",idoption)
-
-        query_finalsteps = f"select next_step from CHOOSE_YOUR_ADVENTURE.OPTION where last_step = ('{idoption}')"
-        cur.execute(query_finalsteps)
-        laststeps = cur.fetchall()
-        list_laststeps = []
-        for x in range(len(laststeps)):
-            list_laststeps.append(laststeps[x][0])
-        tuple_finalsteps = tuple(list_laststeps)
-
-
+        list_idoption = []
+        for x in range (len(idoption)):
+            list_idoption.append(idoption[x][0])
+        tuple_finalsteps = tuple (list_idoption)
 
         id_by_steps[list_steps[i]] = {'Description':description[i][0],'answer_in_step':tuple_finalsteps,
-                                                   'Final_Step':final_step[0]}
+                                                   'Final_Step':final_step}
     return id_by_steps
-print(get_id_bystep_adventure())
 # ------------------------------------------------------------------------------------------------------------
 
 def get_first_step_adventure():
@@ -506,37 +498,17 @@ def get_first_step_adventure():
 # seguent pas}, (2, 1): {'Description': 'Escoge el camino del centro, del que parecen provenir ruidos de ramas al
 # romperse y astillarse ...', 'Resolution_Anwer': 'Piensas que para ser digno de la espada de las valkirias, debes
 # de afrontar tus miedos y peligros que acechan', 'NextStep_Adventure': 3}....}
-#--------------
-# Crea una tupla con las opciones que puede escojer cada step
-#         query_idoption = f"select id_option from CHOOSE_YOUR_ADVENTURE.OPTION where last_step = ('{list_steps[i]}')"
-#         cur.execute(query_idoption)
-#         idoption = cur.fetchall()
-#         list_idoption = []
-#         for x in range (len(idoption)):
-#             list_idoption.append(idoption[x][0])
-#         tuple_idoption = tuple(list_idoption)
-#
-#         list_laststeps = []
-#         for x in range(len(tuple_idoption)):
-#             query_finalsteps = f"select next_step from CHOOSE_YOUR_ADVENTURE.OPTION" \
-#                                f" where id_option = ('{tuple_idoption[x]}')"
-#             cur.execute(query_finalsteps)
-#             laststeps = cur.fetchone()
-#             list_laststeps.append(laststeps[0])
-#         tuple_finalsteps = tuple (list_laststeps)
 def get_answers_bystep_adventure():
 
     idAnswers_ByStep_Adventure = {}
     id_by_steps = get_id_bystep_adventure()
 
-    # Llamo a la funcion getIdGames para cojer el último id
-    id_game = getIdGames()
-    id_game = id_game[len(id_game) - 1]
-
-    get_adventures_with_chars()
+    query_idgames = f"select id_game from ADVENTURE_SAVE order by id_game desc"
+    cur.execute(query_idgames)
+    id_game = cur.fetchall()[0][0]
 
     # Query para sacar el ultimo paso realizado
-    query_idstep = f"select id_step from ADVENTURE_SAVE where id_game = ('{id_game}') order by id_step desc"
+    query_idstep = f"select id_option from ADVENTURE_SAVE where id_game = ('{id_game}') order by id_adventure_save desc"
     cur.execute(query_idstep)
     id_steps = cur.fetchall()
     if len(id_steps) == 0:
@@ -553,13 +525,10 @@ def get_answers_bystep_adventure():
         description = cur.fetchall()
         description = description[i][0]
 
-        if id_by_steps[id_answers[i]]["Final_Step"] == 1:
-            answer = ""
-        else:
-            #Query per sacar answer del pas seleccionat
-            query_answer = f"select answer from CHOOSE_YOUR_ADVENTURE.OPTION where id_option = ('{id_answers[i]}')"
-            cur.execute(query_answer)
-            answer = cur.fetchone()[0]
+        #Query per sacar answer del pas seleccionat
+        query_answer = f"select answer from CHOOSE_YOUR_ADVENTURE.OPTION where id_option = ('{id_answers[i]}')"
+        cur.execute(query_answer)
+        answer = cur.fetchone()[0]
 
         #Query per sacar el id del següent pas
         query_next= f"select next_step from CHOOSE_YOUR_ADVENTURE.OPTION where id_option = ('{id_answers[i]}')"
@@ -575,7 +544,47 @@ def getChoices():
     b = get_answers_bystep_adventure()
     tuple_Res = (a,b)
     return tuple_Res
-
-# FUNCIONES QUE FALTAN POR IMPLEMENTAR(TIENEN PARTE DE SQL)
-# def getFormatedTable(queryTable,title=""):
+#-----------------------------------------------------------------FALTA
+# #((1,14))
+# #((1,2),(2,7))
+# #necesitaria el id_game, sino no puedo saber el id_adventure que necesita imprimir
 # def replay(choices):
+#     for step in choices:
+#         for options in step:
+#             query_
+#--------------------------------------------------------------------------
+
+
+def getFormatedTable(queryTable,title=""):
+    list_len_text = []
+    space_left = 120
+    #Añado a una lista los espacios que tiene cada columna equitativamente
+    for i in range(len(queryTable[0])):
+        list_len_text.append(120//len(queryTable[0]))
+        space_left -= (120//len(queryTable[0]))
+
+    while space_left != 0:
+        for i in range(len(list_len_text)):
+            if space_left != 0:
+                list_len_text[i] += 1
+                space_left -= 1
+
+    for i in range(len(list_len_text)):
+        list_len_text[i] = list_len_text[i] - len(queryTable[0][i])
+
+    for i in range(len(list_len_text)*2):
+        for j in range(len(list_len_text)-1):
+            if list_len_text[j] > list_len_text[j+1]:
+                list_len_text[j] = list_len_text[j] - 1
+                list_len_text[j+1] = list_len_text[j+1] + 1
+
+    tuple_lentext = tuple(list_len_text)
+    header = (getHeadeForTableFromTuples(queryTable[0],tuple_lentext,title)) +"\n"+("*"*120)
+    content = ""
+    for i in range(1,len(queryTable)):
+        content += "\n" + getFormatedBodyColumns(queryTable[i],tuple_lentext)
+
+    return header+content
+
+
+print(getFormatedTable(get_table(f"select answer,description,user_create from CHOOSE_YOUR_ADVENTURE.OPTION"),"USUARIOS"))
