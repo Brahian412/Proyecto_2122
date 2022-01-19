@@ -144,9 +144,10 @@ while True:
         print(funciones.getFormatedBodyColumns(("Description: ", adventures[adv]["Description"]), (30, 50)))
         print("\n" + "*" * 45 + "Characters" + "*" * 45)
         characters = funciones.get_characters()
+
         for i in range(len(adventures[adv]["Characters"])):
-            stringChars += ("{})".format(adventures[adv]["Characters"][i]) + characters[
-                adventures[adv]["Characters"][i]] + "\n")
+            stringChars += ("{})".format(adventures[adv]["Characters"][i]) +
+                            characters[adventures[adv]["Characters"][i]] + "\n")
         char = funciones.getOpt("\n" + stringChars, "Select your Character (0 Go back)", adventures[adv]["Characters"],
                                 exceptions=[0])
 
@@ -154,25 +155,58 @@ while True:
             flg_juego = False
             flg_10 = True
             break
-        else:
-            a = funciones.getIdGames()
-            id_game = a[len(a) - 1]
 
-            list_ids = funciones.getUserIds()
-            index_user = list_ids[0].index(username)
+        a = funciones.getIdGames()
+        id_game = a[len(a) - 1]
 
-            game_context["id_game"] = id_game
-            game_context["id_adventure"] = adv
-            game_context["name_adventure"] = adventures[adv]["Name"]
-            game_context["id_character"] = char
-            game_context["character_name"] = characters[char]
-            game_context["id_user"] = list_ids[1][index_user]
-            game_context["user"] = username
+        list_ids = funciones.getUserIds()
+        index_user = list_ids[0].index(username)
 
-            print("You have selected to play with {}".format(characters[char]))
-            input("Press Enter to continue")
-            print("\n\n\n")
+        game_context["id_game"] = id_game
+        game_context["id_adventure"] = adv
+        game_context["name_adventure"] = adventures[adv]["Name"]
+        game_context["id_character"] = char
+        game_context["character_name"] = characters[char]
+        game_context["id_user"] = list_ids[1][index_user]
+        game_context["user"] = username
+        game_context["id_step"] = 1
+
+        print("You have selected to play with {}".format(characters[char]))
+        input("Press Enter to continue")
+        print("\n\n\n")
+        stringOptions = ""
+        id_by_steps = funciones.get_id_bystep_adventure()
+        list_users_ids = funciones.getUserIds()
+        id_user = list_users_ids[1][list_users_ids[0].index(username)]
+        funciones.insertCurrentGame(id_user,char,adv)
+        fstep = funciones.get_first_step_adventure()
+        tup_options = fstep["answer_in_step"]
+        idAnswers_ByStep_Adventure = funciones.get_answers_bystep_adventure()
+
+
+        funciones.getHeader(adventures[adv]["Name"])
+        print(fstep["Description"])
+        print("Options:\n")
+        for i in tup_options:
+            stringOptions += "{})".format(i) + idAnswers_ByStep_Adventure[(i, 1)]["Description"] + "\n"
+        opc = funciones.getOpt(textOpts=stringOptions,inputOptText="Select Option ->",rangeList=list(tup_options),)
+        funciones.insertCurrentChoice(game_context["id_game"],game_context["id_step"],opc)
+        print(idAnswers_ByStep_Adventure[(opc, game_context["id_step"])]["Resolution_Answer"])
+        print()
+        input("Press Enter to continue")
+        game_context["id_step"] = idAnswers_ByStep_Adventure[(opc,1)]["NextStep_Adventure"]
+
+        while True:
+            tup_options = id_by_steps[game_context["id_step"]]["answer_in_step"]
+            stringOptions = ""
             funciones.getHeader(adventures[adv]["Name"])
+            print(id_by_steps[game_context["id_step"]]["Description"])
+            print("Options:")
+            print(tup_options)
+            for i in tup_options:
+                stringOptions += "{})".format(i) + idAnswers_ByStep_Adventure[(i, game_context["id_step"])]["Description"] + "\n"
+            opc = funciones.getOpt(textOpts=stringOptions, inputOptText="Select Option ->",
+                                   rangeList=list(tup_options), )
 
 
     # Flag para la creación de usuario
