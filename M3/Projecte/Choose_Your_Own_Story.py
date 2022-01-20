@@ -180,11 +180,11 @@ while True:
         list_users_ids = funciones.getUserIds()
         id_user = list_users_ids[1][list_users_ids[0].index(username)]
         funciones.insertCurrentGame(id_user,char,adv)
+        funciones.insertCurrentChoice(game_context["id_game"],1,1)
         fstep = funciones.get_first_step_adventure()
         #Tupla que contiene los next_step
         tup_options = fstep["answer_in_step"]
         idAnswers_ByStep_Adventure = funciones.get_answers_bystep_adventure()
-
 
         funciones.getHeader(adventures[adv]["Name"])
         print(fstep["Description"])
@@ -198,28 +198,57 @@ while True:
         print(idAnswers_ByStep_Adventure[(opc, game_context["id_step"])]["Resolution_Answer"])
         print()
         input("Press Enter to continue")
-#AQUI HAY UN UNO QUE NO DEBERÍA ESTAR
-        game_context["id_step"] = idAnswers_ByStep_Adventure[(opc,1)]["NextStep_Adventure"]
+        game_context["id_step"] = opc
         idAnswers_ByStep_Adventure = funciones.get_answers_bystep_adventure()
+
         while True:
-            tup_options = id_by_steps[game_context["id_step"]]["answer_in_step"]
-            stringOptions = ""
-            funciones.getHeader(adventures[adv]["Name"])
-            print(id_by_steps[game_context["id_step"]]["Description"])
-            print("Options:")
-            for i in tup_options:
-                stringOptions += "{})".format(i) +\
-                                 idAnswers_ByStep_Adventure[(i, game_context["id_step"])]["Description"] + "\n"
-            opc = funciones.getOpt(textOpts=stringOptions, inputOptText="Select Option ->",
-                                   rangeList=list(tup_options), )
+            if id_by_steps[game_context['id_step']]["Final_Step"] == 0:
 
-            funciones.insertCurrentChoice(game_context["id_game"], game_context["id_step"], opc)
-            print(idAnswers_ByStep_Adventure[(opc, game_context["id_step"])]["Resolution_Answer"])
-            print()
-            input("Press Enter to continue")
-            game_context["id_step"] = idAnswers_ByStep_Adventure[(opc,game_context["id_step"])]["NextStep_Adventure"]
-            idAnswers_ByStep_Adventure = funciones.get_answers_bystep_adventure()
+                print("PASO EN EL QUE ME ENCUENTRO ->",game_context["id_step"])
 
+                tup_options = id_by_steps[game_context["id_step"]]["answer_in_step"]
+                print("TUPLA CON LOS ID DE LAS OPCIONES=",tup_options)
+                tup_nextstep = funciones.idoptionstoidnextstep(tup_options)
+                print("TUPLA CON LAS OPCIONES=",tup_nextstep)
+                stringOptions = ""
+                funciones.getHeader(adventures[adv]["Name"])
+                print(id_by_steps[game_context["id_step"]]["Description"])
+                print("Options:")
+                print("debug tup_nextstep =",tup_nextstep)
+                print("debug idAnswers_ByStep_Adventure =", idAnswers_ByStep_Adventure)
+
+                for i in tup_nextstep:
+                    stringOptions += "{})".format(i) +\
+                                     idAnswers_ByStep_Adventure[(tup_options[tup_nextstep.index(i)], game_context["id_step"])]["Description"] + "\n"
+                print("debug list(tup_nextstep) =", list(tup_nextstep))
+                opc = funciones.getOpt(textOpts=stringOptions, inputOptText="Select Option ->",
+                                       rangeList=list(tup_nextstep))
+
+                print(idAnswers_ByStep_Adventure[(tup_options[tup_nextstep.index(opc)], game_context["id_step"])]["Resolution_Answer"])
+                print()
+                input("Press Enter to continue")
+
+                print("OPC DE ID_OPTION ->",tup_options[tup_nextstep.index(opc)])
+
+                funciones.insertCurrentChoice(game_context["id_game"], game_context["id_step"], tup_options[tup_nextstep.index(opc)])
+
+                print("AÑADIR A LA BBDD SU ID GAME:{}, SU PASO ACTUAL:{}, SU ID OPTION ESCOGIDA:{}".format(game_context["id_game"], game_context["id_step"], tup_options[tup_nextstep.index(opc)]))
+
+                game_context["id_step"] = opc
+
+                print("PASO AL QUE TENGO QUE IR ->",game_context["id_step"])
+
+                idAnswers_ByStep_Adventure = funciones.get_answers_bystep_adventure()
+                print("------------------------------------------------------------------------------------------------------------------")
+            else:
+                funciones.getHeader(adventures[adv]["Name"])
+                print(id_by_steps[game_context["id_step"]]["Description"])
+                print("FINAL")
+                input("Press Enter to continue")
+                funciones.insertCurrentChoice(game_context["id_game"], game_context["id_step"], opc)
+                break
+        flg_juego = False
+        flg_10 = True
     # Flag para la creación de usuario
     while flg_2:
         while True:
