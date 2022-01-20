@@ -1,7 +1,8 @@
 from datetime import datetime
 import pymysql
 
-conn = pymysql.connect(host="52.157.66.187", user="aleix", password="1Q2w3e4r5t6y", db="CHOOSE_YOUR_ADVENTURE")
+#conn = pymysql.connect(host="52.157.66.187", user="aleix", password="1Q2w3e4r5t6y", db="CHOOSE_YOUR_ADVENTURE")
+conn = pymysql.connect(host="127.0.0.1", user="brahian", password="Pelochocolo1", db="CHOOSE_YOUR_ADVENTURE")
 cur = conn.cursor()
 
 
@@ -499,46 +500,49 @@ def get_first_step_adventure():
 # romperse y astillarse ...', 'Resolution_Anwer': 'Piensas que para ser digno de la espada de las valkirias, debes
 # de afrontar tus miedos y peligros que acechan', 'NextStep_Adventure': 3}....}
 def get_answers_bystep_adventure():
-
     idAnswers_ByStep_Adventure = {}
     id_by_steps = get_id_bystep_adventure()
 
-    query_idgames = f"select id_game from ADVENTURE_SAVE order by id_game desc"
+    query_idgames = f"select id_option from ADVENTURE_SAVE order by id_adventure_save desc"
     cur.execute(query_idgames)
-    id_game = cur.fetchall()[0][0]
+    id_option = cur.fetchall()[0][0]
+    print("ID OPTION = ",id_option)
 
-    # Query para sacar el ultimo paso realizado
-    query_idstep = f"select id_option from ADVENTURE_SAVE where id_game = ('{id_game}') order by id_adventure_save desc"
+    # Query para sacar el ultimo paso escogido
+    query_idstep = f"select last_step from CHOOSE_YOUR_ADVENTURE.OPTION where id_option = ('{id_option}')"
     cur.execute(query_idstep)
-    id_steps = cur.fetchall()
+    id_steps = cur.fetchone()
+
     if len(id_steps) == 0:
         id_steps = 1
     else:
-        id_steps = id_steps[0][0]
+        id_steps = id_steps[0]
 
-    id_answers = id_by_steps[id_steps]["answer_in_step"]
+    #Tupla con los id_options posibles de cada step (last_step)
+    #idsteps -->  {1:{'answers_in_step': (tupla amb els ids de les opcions posibles en aquest pas ), 'Final_Step': 0 }}
+    tuple_id_answers = id_by_steps[id_steps]["answer_in_step"]
 
-    for i in range(len(id_answers)):
-        #description = id_by_steps[i]["Description"]
-        query_desc = f"select description from CHOOSE_YOUR_ADVENTURE.OPTION where last_step = ('{id_steps}')"
+    for i in range(len(tuple_id_answers)):
+        query_desc = f"select description from CHOOSE_YOUR_ADVENTURE.OPTION where id_option = ('{tuple_id_answers[i]}')"
         cur.execute(query_desc)
-        description = cur.fetchall()
-        description = description[i][0]
+        description = cur.fetchone()[0]
 
         #Query per sacar answer del pas seleccionat
-        query_answer = f"select answer from CHOOSE_YOUR_ADVENTURE.OPTION where id_option = ('{id_answers[i]}')"
+        query_answer = f"select answer from CHOOSE_YOUR_ADVENTURE.OPTION where id_option = ('{tuple_id_answers[i]}')"
         cur.execute(query_answer)
         answer = cur.fetchone()[0]
 
         #Query per sacar el id del següent pas
-        query_next= f"select next_step from CHOOSE_YOUR_ADVENTURE.OPTION where id_option = ('{id_answers[i]}')"
+        query_next= f"select next_step from CHOOSE_YOUR_ADVENTURE.OPTION where id_option = ('{tuple_id_answers[i]}')"
         cur.execute(query_next)
         id_next = cur.fetchone()[0]
 
-        idAnswers_ByStep_Adventure[(id_answers[i],id_steps)] = {"Description":description,"Resolution_Answer":answer,"NextStep_Adventure":id_next}
+        #idAnswers_ByStep_Adventure[id_option siguiente , step actual]= {descripcion,respuesta,next_Step}
+        idAnswers_ByStep_Adventure[(tuple_id_answers[i],id_steps)] =\
+            {"Description":description,"Resolution_Answer":answer,"NextStep_Adventure":id_next}
 
     return idAnswers_ByStep_Adventure
-
+print(get_answers_bystep_adventure())
 def getChoices():
     a = get_id_bystep_adventure()
     b = get_answers_bystep_adventure()
@@ -586,5 +590,12 @@ def getFormatedTable(queryTable,title=""):
 
     return header+content
 
+def idoptionstoidnextstep (tuple_idoptions):
+    list_idnextstep = []
+    for i in range (len(tuple_idoptions)):
+        query_idnext = f"select next_step from CHOOSE_YOUR_ADVENTURE.OPTION where id_option = ('{tuple_idoptions[i]}')"
+        cur.execute(query_idnext)
+        list_idnextstep.append(cur.fetchone()[0])
+    return tuple(list_idnextstep)
 
-print(getFormatedTable(get_table(f"select answer,description,user_create from CHOOSE_YOUR_ADVENTURE.OPTION"),"USUARIOS"))
+#print(getFormatedTable(get_table(f"select answer,description,user_create from CHOOSE_YOUR_ADVENTURE.OPTION"),"USUARIOS"))
