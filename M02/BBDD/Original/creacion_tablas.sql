@@ -2,20 +2,22 @@ drop database if exists CHOOSE_YOUR_ADVENTURE;
 create database if not exists CHOOSE_YOUR_ADVENTURE;
 use CHOOSE_YOUR_ADVENTURE;
 
+
 -- -----------------------------------------------------
 -- Table creation: USER
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS CHOOSE_YOUR_ADVENTURE.USER;
 
 CREATE TABLE IF NOT EXISTS CHOOSE_YOUR_ADVENTURE.USER (
-id_user INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-password VARCHAR(45) NOT NULL,
-user_name VARCHAR(45) NOT NULL,
-user_create VARCHAR(45) NULL,
-user_modifications VARCHAR(45) NULL,
-date_creation DATE NULL,
-date_modification DATE NULL
+id_user INT,
+password VARCHAR(45),
+user_name VARCHAR(45),
+user_create VARCHAR(45),
+user_modifications VARCHAR(45),
+date_creation DATE,
+date_modification DATE
 );
+
 
 -- -----------------------------------------------------
 -- Table creation: CHARACTER
@@ -23,49 +25,48 @@ date_modification DATE NULL
 DROP TABLE IF EXISTS CHOOSE_YOUR_ADVENTURE.CHARACTER;
 
 CREATE TABLE IF NOT EXISTS CHOOSE_YOUR_ADVENTURE.CHARACTER (
-id_character INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-character_name VARCHAR(45) NOT NULL,
-description VARCHAR(1000) NOT NULL,
-user_create VARCHAR(45) NULL,
-user_modifications VARCHAR(45) NULL,
-date_creation DATE NULL,
-date_modification DATE NULL
+id_character INT,
+character_name VARCHAR(45),
+description VARCHAR(1000),
+user_create VARCHAR(45),
+user_modifications VARCHAR(45),
+date_creation DATETIME,
+date_modification DATETIME
 );
+
 
 -- -----------------------------------------------------
 -- Table creation: ADVENTURE
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS CHOOSE_YOUR_ADVENTURE.ADVENTURE;
+DROP TABLE IF EXISTS ADVENTURE;
 
-CREATE TABLE IF NOT EXISTS CHOOSE_YOUR_ADVENTURE.ADVENTURE (
-id_adventure INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-adventure_name VARCHAR(45) NOT NULL,
-description VARCHAR(1000) NOT NULL,
-user_create VARCHAR(45) NULL,
-user_modifications VARCHAR(45) NULL,
-date_creation DATE NULL,
-date_modification DATE NULL
+CREATE TABLE IF NOT EXISTS ADVENTURE (
+id_adventure INT,
+adventure_name VARCHAR(45),
+description VARCHAR(1000),
+user_create VARCHAR(45),
+user_modifications VARCHAR(45),
+date_creation DATETIME,
+date_modification DATETIME
 );
+
 
 -- -----------------------------------------------------
 -- Table creation: STEP
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS CHOOSE_YOUR_ADVENTURE.STEP;
+DROP TABLE IF EXISTS STEP;
 
-CREATE TABLE IF NOT EXISTS CHOOSE_YOUR_ADVENTURE.STEP (
-id_step INT NOT NULL AUTO_INCREMENT,
-end_step BIT(1) NOT NULL,
-description VARCHAR(1000) NOT NULL,
-id_adventure INT NOT NULL,
-user_create VARCHAR(45) NULL,
-user_modifications VARCHAR(45) NULL,
-date_creation DATE NULL,
-date_modification DATE NULL,
-PRIMARY KEY (id_step, id_adventure),
-CONSTRAINT FK_ADVENTURE_STEP
-FOREIGN KEY (id_adventure)
-REFERENCES CHOOSE_YOUR_ADVENTURE.ADVENTURE (id_adventure)
+CREATE TABLE IF NOT EXISTS STEP (
+id_step INT,
+end_step INT,
+description VARCHAR(1000),
+id_adventure INT,
+user_create VARCHAR(45),
+user_modifications VARCHAR(45),
+date_creation DATETIME,
+date_modification DATETIME
 );
+
 
 -- -----------------------------------------------------
 -- Table creation: OPTION
@@ -73,89 +74,63 @@ REFERENCES CHOOSE_YOUR_ADVENTURE.ADVENTURE (id_adventure)
 DROP TABLE IF EXISTS CHOOSE_YOUR_ADVENTURE.OPTION;
 
 CREATE TABLE IF NOT EXISTS CHOOSE_YOUR_ADVENTURE.OPTION (
-id_option INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-answer VARCHAR(1000) NOT NULL,
-last_step INT NOT NULL,
-next_step INT NOT NULL,
-description VARCHAR(1000) NOT NULL,
-user_create VARCHAR(45) NULL,
-user_modifications VARCHAR(45) NULL,
-date_creation DATE NULL,
-date_modification DATE NULL,
-CONSTRAINT FK_OPTION_STEP
-FOREIGN KEY (last_step)
-REFERENCES CHOOSE_YOUR_ADVENTURE.STEP (id_step),
-CONSTRAINT FK_STEP_OPTION
-FOREIGN KEY (next_step)
-REFERENCES CHOOSE_YOUR_ADVENTURE.STEP (id_step)
+id_option INT,
+id_adventure INT,
+last_step INT,
+next_step INT,
+description VARCHAR(1000),
+answer VARCHAR(1000),
+user_create VARCHAR(45),
+user_modifications VARCHAR(45),
+date_creation DATETIME,
+date_modification DATETIME
 );
+
 
 -- -----------------------------------------------------
 -- Table creation: GAME
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS CHOOSE_YOUR_ADVENTURE.GAME;
+DROP TABLE IF EXISTS GAME;
 
-CREATE TABLE IF NOT EXISTS CHOOSE_YOUR_ADVENTURE.GAME (
-id_game INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-id_adventure INT NOT NULL,
-id_character INT NOT NULL,
-id_user INT NOT NULL,
-date DATETIME NOT NULL,
-user_create VARCHAR(45) NULL,
-user_modifications VARCHAR(45) NULL,
-date_creation DATE NULL,
-date_modification DATE NULL,
-CONSTRAINT FK_ADVENTURE_GAME
-FOREIGN KEY (id_adventure)
-REFERENCES CHOOSE_YOUR_ADVENTURE.ADVENTURE (id_adventure),
-CONSTRAINT FK_CHARACTER_GAME
-FOREIGN KEY (id_character)
-REFERENCES CHOOSE_YOUR_ADVENTURE.CHARACTER (id_character),
-CONSTRAINT FK_USER_GAME
-FOREIGN KEY (id_user)
-REFERENCES CHOOSE_YOUR_ADVENTURE.USER (id_user)
+CREATE TABLE IF NOT EXISTS GAME (
+id_game INT,
+id_adventure INT,
+id_character INT,
+id_user INT,
+date DATETIME,
+user_create VARCHAR(45),
+user_modifications VARCHAR(45),
+date_creation DATETIME,
+date_modification DATETIME
 );
+
 
 -- -----------------------------------------------------
 -- Table creation: ADVENTURE_SAVE
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS CHOOSE_YOUR_ADVENTURE.ADVENTURE_SAVE;
+DROP TABLE IF EXISTS ADVENTURE_SAVE;
 
-CREATE TABLE IF NOT EXISTS CHOOSE_YOUR_ADVENTURE.ADVENTURE_SAVE (
-id_adventure_save INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-id_game INT NOT NULL,
-id_step INT NOT NULL,
-id_option INT NOT NULL,
-user_create VARCHAR(45) NULL,
-user_modifications VARCHAR(45) NULL,
-date_creation DATE NULL,
-date_modification DATE NULL,
-CONSTRAINT FK_GAME_ADVENTURE_SAVE
-FOREIGN KEY (id_game)
-REFERENCES CHOOSE_YOUR_ADVENTURE.GAME (id_game),
-CONSTRAINT FK_STEP_ADVENTURE_SAVE
-FOREIGN KEY (id_step)
-REFERENCES CHOOSE_YOUR_ADVENTURE.STEP (id_step),
-CONSTRAINT FK_OPTION_ADVENTURE_SAVE
-FOREIGN KEY (id_option)
-REFERENCES CHOOSE_YOUR_ADVENTURE.OPTION (id_option)
+CREATE TABLE IF NOT EXISTS ADVENTURE_SAVE (
+id_adventure_save INT,
+id_game INT,
+id_step INT,
+id_option INT,
+id_adventure INT,
+user_create VARCHAR(45),
+user_modifications VARCHAR(45),
+date_creation DATETIME,
+date_modification DATETIME
 );
+
 
 -- -----------------------------------------------------
 -- Table creation: CHARACTER_ADVENTURE
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS CHOOSE_YOUR_ADVENTURE.CHARACTER_ADVENTURE;
+DROP TABLE IF EXISTS CHARACTER_ADVENTURE;
 
-CREATE TABLE IF NOT EXISTS CHOOSE_YOUR_ADVENTURE.CHARACTER_ADVENTURE (
-id_character INT NOT NULL AUTO_INCREMENT,
-id_adventure INT NOT NULL,
-PRIMARY KEY (id_character, id_adventure),
-CONSTRAINT FK_CHARACTER_ADVENTURE
-FOREIGN KEY (id_character)
-REFERENCES CHOOSE_YOUR_ADVENTURE.CHARACTER (id_character),
-CONSTRAINT FK_ADVENTURE_CHARACTER
-FOREIGN KEY (id_adventure)
-REFERENCES CHOOSE_YOUR_ADVENTURE.ADVENTURE (id_adventure)
+CREATE TABLE IF NOT EXISTS CHARACTER_ADVENTURE (
+id_character INT,
+id_adventure INT
 );
 
 
