@@ -2,7 +2,6 @@ from datetime import datetime
 import pymysql
 
 conn = pymysql.connect(host="52.157.66.187", user="aleix", password="1Q2w3e4r5t6y", db="CHOOSE_YOUR_ADVENTURE")
-#conn = pymysql.connect(host="127.0.0.1", user="brahian", password="Pelochocolo1", db="CHOOSE_YOUR_ADVENTURE")
 cur = conn.cursor()
 
 
@@ -32,6 +31,31 @@ def getMainHeader():
           "\n           ##     ##    ###    ######## ##    ##    ##     #######  ##     ## ##     ##    ")
     print("*" * 100)
 
+def getReplayHeader():
+    print("*" * 100)
+    print("                   ########  ######## ########  ##          ###    ##    ##   "
+          "\n                   ##     ## ##       ##     ## ##         ## ##    ##  ##  "
+          "\n                   ##     ## ##       ##     ## ##        ##   ##    ####   "
+          "\n                   ########  ######   ########  ##       ##     ##    ##    "
+          "\n                   ##   ##   ##       ##        ##       #########    ##    "
+          "\n                   ##    ##  ##       ##        ##       ##     ##    ##    "
+          "\n                   ##     ## ######## ##        ######## ##     ##    ##    ")
+
+    print("\n                        ##    ##  #######  ##     ## ########  "
+          "\n                         ##  ##  ##     ## ##     ## ##     ## "
+          "\n                          ####   ##     ## ##     ## ##     ## "
+          "\n                           ##    ##     ## ##     ## ########  "
+          "\n                           ##    ##     ## ##     ## ##   ##   "
+          "\n                           ##    ##     ## ##     ## ##    ##  "
+          "\n                           ##     #######   #######  ##     ## ")
+    print("\n            ###    ########  ##     ## ######## ##    ## ######## ##     ## ########  ######## "
+          "\n           ## ##   ##     ## ##     ## ##       ###   ##    ##    ##     ## ##     ## ##       "
+          "\n          ##   ##  ##     ## ##     ## ##       ####  ##    ##    ##     ## ##     ## ##       "
+          "\n         ##     ## ##     ## ##     ## ######   ## ## ##    ##    ##     ## ########  ######   "
+          "\n         ######### ##     ##  ##   ##  ##       ##  ####    ##    ##     ## ##   ##   ##       "
+          "\n         ##     ## ##     ##   ## ##   ##       ##   ###    ##    ##     ## ##    ##  ##       "
+          "\n         ##     ## ########     ###    ######## ##    ##    ##     #######  ##     ## ######## ")
+    print("*" * 100)
 
 def getReportHeader():
     print("*" * 100)
@@ -55,6 +79,7 @@ def getHeader(header):
 
 
 def formatText(phrase, lenline, split):
+    phrase = str(phrase)
     lista = phrase.split()
     sizes = lenline
     stringres = ""
@@ -126,7 +151,7 @@ def getHeadeForTableFromTuples(t_name_columns, t_size_columns, title=""):
         else:
             stringRes = "=" * tam + title + "=" * tam + "\n"
     else:
-        stringRes = "=" * 100 + "\n"
+        stringRes = "=" * 120 + "\n"
 
     for i in range(len(t_name_columns)):
         stringRes = stringRes + t_name_columns[i] + " " * t_size_columns[i]
@@ -154,7 +179,7 @@ def getOpt(textOpts="", inputOptText="", rangeList=[], dictionary={}, exceptions
     while True:
         print(textOpts + "\n")
         opc = input(inputOptText)
-        if opc.isdigit():
+        if opc.isdigit() and len(opc)>0:
             if (opc in str(rangeList)) or (opc in str(exceptions)) or (opc in str(list_keys)):
                 return int(opc)
             else:
@@ -162,11 +187,14 @@ def getOpt(textOpts="", inputOptText="", rangeList=[], dictionary={}, exceptions
                 input("Press enter to continue")
         # En este else està el caso que introduzca un "+" o un "-" para imprimir más o menos menú
         else:
-            if (opc in str(exceptions)) or (opc in str(list_keys)):
+            if ((opc in str(exceptions)) or (opc in str(list_keys))) and len(opc)>0:
                 return str(opc)
             else:
-                print("=" * 15 + "'{}' is not a valid option".format(opc) + "=" * 15)
-                input("Press enter to continue")
+                if len(opc) == 0:
+                    print("You must type something")
+                else:
+                    print("=" * 15 + "'{}' is not a valid option".format(opc) + "=" * 15)
+                    input("Press enter to continue")
 
 
 def checkPassword(password):
@@ -336,9 +364,9 @@ def insertCurrentGame(idUser, isChar, idAdventure):
     conn.commit()
 
 
-def insertCurrentChoice(idGame, actual_id_step, id_answer):
-    query_insert = f"insert into ADVENTURE_SAVE (id_game,id_step,id_option) " \
-                   f"values ('{idGame}','{actual_id_step}','{id_answer}')"
+def insertCurrentChoice(idGame, actual_id_step, id_answer, id_adventure):
+    query_insert = f"insert into ADVENTURE_SAVE (id_game,id_step,id_option,id_adventure) " \
+                   f"values ('{idGame}','{actual_id_step}','{id_answer}','{id_adventure}')"
     cur.execute(query_insert)
     conn.commit()
 
@@ -471,7 +499,6 @@ def get_id_bystep_adventure():
         id_by_steps[list_steps[i]] = {'Description':description[i][0],'answer_in_step':tuple_finalsteps,
                                                    'Final_Step':final_step}
     return id_by_steps
-# ------------------------------------------------------------------------------------------------------------
 
 def get_first_step_adventure():
     id_by_steps = get_id_bystep_adventure()
@@ -559,15 +586,18 @@ def getFormatedTable(queryTable,title=""):
         list_len_text.append(120//len(queryTable[0]))
         space_left -= (120//len(queryTable[0]))
 
+    #Rellena los espacios para que no sobre ninguno
     while space_left != 0:
         for i in range(len(list_len_text)):
             if space_left != 0:
                 list_len_text[i] += 1
                 space_left -= 1
 
+    #Resto el espacio que tienen por el tamaño de su cabecera
     for i in range(len(list_len_text)):
         list_len_text[i] = list_len_text[i] - len(queryTable[0][i])
 
+    #Reparto los tamaños para que no haya tablas juntas y las separaciones varien en funcion del tamaño de la cabercera
     for i in range(len(list_len_text)*2):
         for j in range(len(list_len_text)-1):
             if list_len_text[j] > list_len_text[j+1]:
@@ -576,12 +606,21 @@ def getFormatedTable(queryTable,title=""):
 
     tuple_lentext = tuple(list_len_text)
     header = (getHeadeForTableFromTuples(queryTable[0],tuple_lentext,title)) +"\n"+("*"*120)
+
+    #For para sumar el tamaño de la cabecera a los espacios, le resto 1 que será para el margin
+    for i in range (len(list_len_text)):
+        list_len_text[i] = list_len_text[i] + len(queryTable[0][i]) - 2
+
+    tuple_lentext = tuple (list_len_text)
     content = ""
     for i in range(1,len(queryTable)):
-        content += "\n" + getFormatedBodyColumns(queryTable[i],tuple_lentext)
+        content += "\n" + getFormatedBodyColumns(queryTable[i],tuple_lentext,2)
 
     return header+content
+#print(getFormatedTable(get_table(f"select answer,description,user_create from CHOOSE_YOUR_ADVENTURE.OPTION"),"USUARIOS"))
 
+
+#Funcion para pasar de una tupla de idoptions a una que te de los next_step
 def idoptionstoidnextstep (tuple_idoptions):
     list_idnextstep = []
     for i in range (len(tuple_idoptions)):
@@ -590,4 +629,3 @@ def idoptionstoidnextstep (tuple_idoptions):
         list_idnextstep.append(cur.fetchone()[0])
     return tuple(list_idnextstep)
 
-#print(getFormatedTable(get_table(f"select answer,description,user_create from CHOOSE_YOUR_ADVENTURE.OPTION"),"USUARIOS"))
