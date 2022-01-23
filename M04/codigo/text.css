@@ -92,6 +92,7 @@ main p{
 .prueba{
 	display: flex;
 	justify-content: baseline;
+	justify-content: space-between;
 	align-items: center;
 }
 .imagen1{
@@ -157,13 +158,13 @@ main p{
 	height: 200px;
 	width: 200px;
 }
-.aboutus i{
+.aboutus i,.videos p{
 	color: #74c2f4;
 	align-items:  center;
 	font-size:large;
 	margin: 20px;
 }
-.eric{
+.eric,.videos{
 	margin: 40px;
 	display: flex;
 	justify-content: baseline;
@@ -171,3 +172,11 @@ main p{
 .aboutus i::first-letter{
 	font-size: 2rem;
   }
+.video p::first-letter{
+	font-size: 2rem;
+}
+.iframe{
+	width: 700px; 
+	height: 400px 
+}
+
