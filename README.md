@@ -8,4 +8,4 @@ En la carpeta de M03 podremos encontrar un zip que contiene la parte correspondi
 para poder ejecutarlo. El programa a ejecutar tiene como nombre Choose_Your_Own_Story.py, en caso de no funcionar abra el funciones.py y instale el pymysql que es un modulo
 extra que hay que descargar para utilizarlo.
 
-En la carpeta de M04 
+En la carpeta de M04 hay tres carpetas detro, la primera es la del codigo donde estan todas las paginas de html y la de css, en la carpeta de fotos estan todas las fotos que hemos usado para crear la pagina web, y por ultimo en la carpeta de videos estan los videos que hemos usado para crear la pagina web
