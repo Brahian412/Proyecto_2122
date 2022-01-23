@@ -9,3 +9,5 @@ para poder ejecutarlo. El programa a ejecutar tiene como nombre Choose_Your_Own_
 extra que hay que descargar para utilizarlo.
 
 En la carpeta de M04 hay tres carpetas detro, la primera es la del codigo donde estan todas las paginas de html y la de css, en la carpeta de fotos estan todas las fotos que hemos usado para crear la pagina web, y por ultimo en la carpeta de videos estan los videos que hemos usado para crear la pagina web.
+
+En la creación de este proyecto hemos utilizado diferentes tecnologías y entornos como pueden ser el Pycharm, el MySQL, el Sublime Text y el Azure.
