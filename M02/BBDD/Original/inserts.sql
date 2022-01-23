@@ -61,34 +61,34 @@ values ('Te suena la alarma, ¿qué haces?', 0, 1, 'eric_escrich', '2022-01-13',
 -- -----------------------------------------------------
 -- Insert into table: OPTION
 -- -----------------------------------------------------
-insert into CHOOSE_YOUR_ADVENTURE.OPTION (id_adventure, description, last_step, next_step, answer, user_create, date_creation, user_modifications, date_modification)
-values (1, 'Apagas la alarma porque quieres dormir', 1, 14, 'Hoy no tienes ganas de levantarte de la cama, te quedaras durmiendo un ratito más...',
+insert into CHOOSE_YOUR_ADVENTURE.OPTION (id_adventure, last_step, next_step, description, answer, user_create, date_creation, user_modifications, date_modification) values
+(1, 1, 14, 'Apagas la alarma porque quieres dormir', 'Hoy no tienes ganas de levantarte de la cama, te quedarás durmiendo un ratito más...',
 'eric_escrich', '2022-01-13', current_user(), current_timestamp()),
-(1, 'Te levantas de la cama como dios manda', 1, 2,'Te levantaras de la cama con ganas de rescatar a tu amada princesa de la torre donde está atrapada!',
+(1, 1, 2, 'Te levantas de la cama como dios manda','Te levantaras de la cama con ganas de rescatar a tu amada princesa de la torre donde está atrapada!',
 'eric_escrich', '2022-01-13', current_user(), current_timestamp()),
-(1, 'Decides no ir a por la princesa. Que vaya otro, hay muchos peces en el mar...', 2, 7, 'Al fin y al cabo el amor no es tan importante',
+(1, 2, 7, 'Decides no ir a por la princesa. Que vaya otro, hay muchos peces en el mar...', 'Al fin y al cabo el amor no es tan importante',
 'eric_escrich', '2022-01-13', current_user(), current_timestamp()),
-(1, 'Te equipas apropiadamente y sales a la aventura', 2, 3, 'Te equiparas al completo con tu armadura y tus armas para luchar contra los posibles peligros del exterior',
+(1, 2, 3, 'Te equipas apropiadamente y sales a la aventura', 'Te equiparas al completo con tu armadura y tus armas para luchar contra los posibles peligros del exterior',
 'eric_escrich', '2022-01-13', current_user(), current_timestamp()),
-(1, 'No te equipas', 2, 4, 'Decides no equiparte, ya que crees que eres muy poderoso y fuerte. Piensas que no tendras demasiados problemas...',
+(1, 2, 4, 'No te equipas', 'Decides no equiparte, ya que crees que eres muy poderoso y fuerte. Piensas que no tendras demasiados problemas...',
 'eric_escrich', '2022-01-13', current_user(), current_timestamp()),
-(1, 'Decides luchar valerosamente', 3, 5, 'Eres muy valiente y decides luchar tu solo contra un poderoso y furioso mounstro de tres cabezas de gran tamaño... Sin duda, ¡una gran decisión!',
+(1, 3, 5, 'Decides luchar valerosamente', 'Eres muy valiente y decides luchar tu solo contra un poderoso y furioso monstruo de tres cabezas de gran tamaño... Sin duda, ¡una gran decisión!',
 'eric_escrich', '2022-01-13', current_user(), current_timestamp()),
-(1, 'Decides intentar hacerte amigo del monstruo', 3, 8, 'Se te ocurre que no es mala idea intentar engatusar al furioso monstruo con tu carisma y tu labia',
+(1, 3, 8, 'Decides intentar hacerte amigo del monstruo', 'Se te ocurre que no es mala idea intentar engatusar al furioso monstruo con tu carisma y tu labia',
 'eric_escrich', '2022-01-13', current_user(), current_timestamp()),
-(1, 'Decides huir', 3, 4, 'Te das cuenta de que no eres tan poderoso ni tan fuerte y escaparas del mounstro y intentaras ir directamente a rescatar a la princesa sin distracciones',
+(1, 3, 4, 'Decides huir', 'Te das cuenta de que no eres tan poderoso ni tan fuerte y escaparas del mounstro y intentaras ir directamente a rescatar a la princesa sin distracciones',
 'eric_escrich', '2022-01-13', current_user(), current_timestamp()),
-(1, 'Buscas al boss final para matarle', 4, 9, 'Estás más motivado que Iniesta cuando metió el gol del mundial de 2010 y vas a buscar al boss final para demostrarle todo tu poder',
+(1, 4, 9, 'Buscas al boss final para matarle', 'Estás más motivado que Iniesta cuando metió el gol del mundial de 2010 y vas a buscar al boss final para demostrarle todo tu poder',
 'eric_escrich', '2022-01-13', current_user(), current_timestamp()),
-(1, 'Buscar la habitación donde está encerrada la princesa', 4, 10, 'Buscarás la habitación por toda la torre. ¿Cuál será la suya?',
+(1, 4, 10, 'Buscar la habitación donde está encerrada la princesa', 'Buscarás la habitación por toda la torre. ¿Cuál será la suya?',
 'eric_escrich', '2022-01-13', current_user(), current_timestamp()),
-(1, 'Restregarte por el suelo, que por suerte está lleno de hojas', 5, 11, 'Después de una batalla épica con el monstruo donde le has derrotado, acabas ardiendo. Si te tiras al suelo y ruedas se apagará el fuego y podrás volver a tu misión principal, ¡Rescatar a la princesa!',
+(1, 5, 11, 'Restregarte por el suelo, que por suerte está lleno de hojas', 'Después de una batalla épica con el monstruo donde le has derrotado, acabas ardiendo. Si te tiras al suelo y ruedas se apagará el fuego y podrás volver a tu misión principal, ¡Rescatar a la princesa!',
 'eric_escrich', '2022-01-13', current_user(), current_timestamp()),
-(1, 'Te tomas una poción de cuerpo ignífugo del Minecraft y entras al castillo', 5, 6, 'Esta poción te hará inmune al fuego y no sentirás nada de dolor. ¡Viva el Minecraft!',
+(1, 5, 6, 'Te tomas una poción de cuerpo ignífugo del Minecraft y entras al castillo', 'Esta poción te hará inmune al fuego y no sentirás nada de dolor. ¡Viva el Minecraft!',
 'eric_escrich', '2022-01-13', current_user(), current_timestamp()),
-(1, 'Rescatas a la pobre princesa de la mala compañía del malvado boss final', 6, 12, 'El boss final está obligando a la princesa a cenar con él, pero no hay nada de lo que preocuparse, ¡estás tú para salvarla!',
+(1, 6, 12, 'Rescatas a la pobre princesa de la mala compañía del malvado boss final', 'El boss final está obligando a la princesa a cenar con él, pero no hay nada de lo que preocuparse, ¡estás tú para salvarla!',
 'eric_escrich', '2022-01-13', current_user(), current_timestamp()),
-(1, 'Decides que sean felices y coman perdices', 6, 13, 'Dejarás tranquilos a los dos tortolitos y te irás a casa, que a ti también te está esperando tu madre para cenar y sabes que no le gusta esperar',
+(1, 6, 13, 'Decides que sean felices y coman perdices', 'Dejarás tranquilos a los dos tortolitos y te irás a casa, que a ti también te está esperando tu madre para cenar y sabes que no le gusta esperar',
 'eric_escrich', '2022-01-13', current_user(), current_timestamp())
 ;
 
@@ -120,9 +120,7 @@ values ('eric_escrich', '12345', 'eric_escrich', '2022-01-17', current_user(), c
 -- Insert into table: GAME
 -- -----------------------------------------------------
 insert into GAME (id_adventure, id_character, id_user, date, user_create, date_creation, user_modifications, date_modification)
-values (1, 1, 1, current_timestamp(), 'eric_escrich', '2022-01-17', current_user(), current_timestamp()),
-(1, 2, 1, current_timestamp(), 'eric_escrich', '2022-01-17', current_user(), current_timestamp()),
-(1,3, 1, current_timestamp(), 'eric_escrich', '2022-01-18', current_user(), current_timestamp())
+values (1, 1, 1, current_timestamp(), 'eric_escrich', '2022-01-17', current_user(), current_timestamp())
 ;
 
 
@@ -130,15 +128,7 @@ values (1, 1, 1, current_timestamp(), 'eric_escrich', '2022-01-17', current_user
 -- Insert into table: ADVENTURE_SAVE
 -- -----------------------------------------------------
 insert into ADVENTURE_SAVE (id_adventure, id_game, id_step, id_option, user_create, date_creation, user_modifications, date_modification)
-values (1, 1, 1, 1, 'eric_escrich', '2022-01-17', current_user(), current_timestamp()),
-(1, 2, 1, 2, 'eric_escrich', '2022-01-17', current_user(), current_timestamp()),
-(1, 2, 2, 4, 'eric_escrich', '2022-01-17', current_user(), current_timestamp()),
-(1, 2, 3, 6, 'eric_escrich', '2022-01-17', current_user(), current_timestamp()),
-(1, 2, 5, 12, 'eric_escrich', '2022-01-17', current_user(), current_timestamp()),
-(1, 2, 6, 14, 'eric_escrich', '2022-01-17', current_user(), current_timestamp()),
-(1, 3, 1, 2, 'eric_escrich', '2022-01-18', current_user(), current_timestamp()),
-(1, 3, 2, 5, 'eric_escrich', '2022-01-18', current_user(), current_timestamp()),
-(1, 3, 4, 9, 'eric_escrich', '2022-01-18', current_user(), current_timestamp())
+values (1, 1, 1, 1, 'eric_escrich', '2022-01-17', current_user(), current_timestamp())
 ;
 
 
